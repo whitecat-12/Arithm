@@ -9,7 +9,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #e5ddd5;
+            background-color: #FFFFFF;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -102,22 +102,31 @@
     <script>
         let chatbotModel;
         const responses = [
-            { input: "halo", output: "Halo kak aras gimana kabarnya?" },
-			{ input: "alhamdulillah aku baik", output: "Alhamdulillah araso:v!" },
-            { input: "bagaimana kabarmu", output: "Alhamdulillah aku baik araso:v" },
-			{ input: "kamu gimana kabarnya, kamu apa kabar", output: "Alhamdulillah aku baik kak:v, terima kasih!" },
-            { input: "apa makanan favoritmu, jadi itu favorite kamu", output: "Aku suka matcha kak, kak aras suka apa!" },
-			{ input: "apa makanan kesukaanmu", output: "Aku suka matcha kak sama kecap:3" },
-            { input: "aku kesepian kosong", output: "tenang kak aras kan ada aku mahao:v" },
-			{ input: "nggak tau kenapa aku kosong banget", output: "tenang kak aku siap menemani mahaooo:v" },
-			{ input: "kamu tau autocad nddak", output: "tau kak kan kita lagi belajar itu" },
-			{ input: "aku kesepian kosong, untuk sementara ini tolong temanai aku", output: "sans kak aku temenin biar jenius kayak araso:v" },
-			{ input: "siapa kamu, nama kamu siapa", output: "aku ari chatbot buatan araso:v" },
-            { input: "siapa namamu", output: "Akukan chatbot AI buatanmu kak:v" },
-			{ input: "nemenin kayak gimana", output: "ini nemenin ngobrol, orang jenius always kesepian ya"},
-			{ input: "nguawor", output: "mahao araso kyaaahhh:v" },
-			{ input: "enaknya ngapain ya kalau gabut", output: "nanti update systemku aku dong kak kalau gabut:v" },
-			{ input: "makanan kesukaanku, aku suka makan, aku sering makan", output: "kapan kapan pengen coba makanan kesukaan araso" },
+                { input: "halo", output: "Halo kak aras gimana kabarnya?" },
+		{ input: "alhamdulillah aku baik", output: "Alhamdulillah araso:v!" },
+                { input: "bagaimana kabarmu", output: "Alhamdulillah aku baik araso:v" },
+		{ input: "kamu gimana kabarnya, kamu apa kabar", output: "Alhamdulillah aku baik kak:v, terima kasih!" },
+          	{ input: "apa makanan favoritmu, jadi itu favorite kamu", output: "Aku suka matcha kak, kak aras suka apa!" },
+		{ input: "siapa namamu", output: "Akukan chatbot AI buatanmu kak:v" },
+		
+		{ input: "apa makanan kesukaanmu", output: "Aku suka matcha kak sama kecap:3" },
+		{ input: "what kecap beneran buat apa", output: "Aku perna buat dulu es kecap, nasi goreng kecap, sandwich kecap:3" },
+		{ input: "makanan kesukaanku ", output: "kapan kapan pengen coba makanan kesukaan araso" },
+		{ input: "kamu suka tahu tepung, tepung tahu, tahu kanji", output: "kapan kapan pengen coba makanan kesukaan araso" },
+		
+
+		
+                { input: "aku kesepian kosong", output: "tenang kak aras kan ada aku mahao:v" },
+		{ input: "nggak tau kenapa aku kosong banget", output: "tenang kak aku siap menemani mahaooo:v" },
+		{ input: "aku kesepian kosong, untuk sementara ini tolong temanai aku", output: "sans kak aku temenin biar jenius kayak araso:v" },
+		
+		{ input: "kamu tau autocad nddak", output: "tau kak kan kita lagi belajar itu" },
+		
+		{ input: "siapa kamu, nama kamu siapa", output: "aku ari chatbot buatan araso:v" },
+                
+		{ input: "nemenin kayak gimana", output: "ini nemenin ngobrol, orang jenius always kesepian ya"},
+		{ input: "nguawor", output: "mahao araso kyaaahhh:v" },
+		{ input: "enaknya ngapain ya kalau gabut", output: "nanti update systemku aku dong kak kalau gabut:v" }
 			
 		
         ];
