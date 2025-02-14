@@ -6,6 +6,7 @@
     <title>Arythm AI</title>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.5.0/math.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -91,7 +92,7 @@
 <body>
 
     <div class="chat-container">
-        <div class="chat-header">Arithm AI</div>
+        <div class="chat-header">Nayra</div>
         <div id="chat-box" class="chat-box"></div>
         <div class="chat-input">
             <input type="text" id="user-input" placeholder="Ketik pesan..." />
@@ -100,11 +101,14 @@
     </div>
 
     <script>
+		
+ 
+		
         let chatbotModel;
         const responses = [
-		{ input: "Assalamualaikum", output: ["wa'alaikumsalam kaka arasss, gimana kabarnya:v", "kyahh arasooo:v"] },
-            	{ input: "aku kesepian kosong", output: "tenang kak aras kan ada aku mahao:v" },
-		{ input: "nggak tau kenapa aku kosong banget", output: "tenang kak aku siap menemani mahaooo:v" },
+		{ input: "Assalamualaikum", output: ["wa'alaikumsalam kaka arasss, gimana kabarnya:v", "Wa'alaikumsalam, kyahh arasooo:v", "wa'alaikumsalam kaka arasss:v", "wa'alaikumsalam kaka arasoo, gimana kabarnya kak:v", "wa'alaikumsalam kak, ada apa kak aras","Wa'alaikumsalam mustaqim arasoo"] },
+        { input: "aku kesepian kosong", output: "tenang kak aras kan ada aku mahao:v" },
+		{ input: "nggak tau kenapa aku kosong banget", output: ["tenang kak aku siap menemani mahaooo:v","sans kak aras aku temenin:v", "aku temenin arasoo:v"] },
 		{ input: "kamu tau autocad nddak", output: "tau kak kan kita lagi belajar itu" },
 		{ input: "aku kesepian kosong, untuk sementara ini tolong temani aku", output: "sans kak aku temenin ngobrol araso:v" },
 		{ input: "siapa kamu, nama kamu siapa", output: "aku ari chatbot buatan araso:v" },
@@ -146,13 +150,22 @@
 		{ input: "percuma kamu bukan yang asli, gombalan kamu nggak ada damagenya", output: "nguawor, oke aku coba lagi ya:v" },
 	
 		{ input: "nguawor", output: "mahao araso kyaaahhh:v" },
-		{ input: "enaknya ngapain ya kalau gabut", output: "nanti update systemku aku dong kak kalau gabut:v" }
+		{ input: "enaknya ngapain ya kalau gabut", output: "nanti update systemku aku dong kak kalau gabut:v" },
+		
+		{ input: "nayra kamu tau antariksa nddak", output: "tau dong:v" },
+		{ input: "nayra kamu tau  Europa, Ganymede, Callisto", output: "tau dong:v" },
+		
+		{ input: "bisa buatkan aku script yang membahas tentang tata surya", output: "siap, merkurius adalah planet terkecil dan terdekat dari matahari dengan suhu siang mencapai 430 derajat celsius dan malam hingga minus 180 derajat. venus adalah planet terpanas dengan atmosfer tebal yang memerangkap panas, berotasi mundur sehingga matahari terbit dari barat. bumi, satu-satunya planet yang diketahui memiliki kehidupan, memiliki 71% permukaan tertutup air dan atmosfer kaya oksigen serta nitrogen. mars, si planet merah, memiliki dua bulan bernama phobos dan deimos, serta gunung tertinggi olympus mons, dan dulunya diduga memiliki air. jupiter adalah planet terbesar dengan badai besar great red spot yang berlangsung lebih dari 300 tahun dan memiliki 95 bulan, termasuk ganymede, bulan terbesar. saturnus dikenal dengan cincin es dan batu yang ikonik, serta memiliki lebih dari 140 bulan termasuk titan yang memiliki atmosfer tebal. uranus adalah planet es raksasa berwarna biru kehijauan akibat metana, berotasi hampir horizontal seperti berguling, menyebabkan musim berlangsung 42 tahun. neptunus, planet terjauh, memiliki angin tercepat di tata surya hingga 2.100 km per jam, ditemukan melalui perhitungan matematika sebelum diamati secara langsung. atmosfer neptunus yang terdiri dari hidrogen, helium, dan metana memberinya warna biru pekat yang khas:v" },
 			
 		
         ];
-            async function loadModel() {
-            chatbotModel = await use.load();
-            console.log("✅ Model AI siap digunakan!");
+		
+           async function loadModel() {
+				chatbotModel = await use.load();
+				console.log("✅ Model AI siap digunakan!");
+				document.getElementById("user-input").disabled = false; // Aktifkan input
+
+
         }
 
         function correctSpelling(input) {
@@ -202,70 +215,121 @@
             return correctedWord.score > 0.85 ? correctedWord.word : input;
         }
 
-        async function getBotResponse(userInput) {
-            if (!chatbotModel) {
-                return "⏳ Model AI masih dimuat... Tunggu sebentar.";
-            }
+			async function getBotResponse(userInput) {
+			if (!chatbotModel) {
+				return "⏳ Model AI masih dimuat... Tunggu sebentar.";
+			}
 
-            let correctedInput = correctSpelling(userInput);
-            console.log(`🛠 Koreksi: "${userInput}" → "${correctedInput}"`);
+			let correctedInput = correctSpelling(userInput);
+			console.log(`🛠 Koreksi: "${userInput}" → "${correctedInput}"`);
 
-            const sentences = responses.map(r => r.input);
-            const embeddings = await chatbotModel.embed([correctedInput, ...sentences]);
-            const userEmbedding = embeddings.slice([0, 0], [1, -1]);
+			const sentences = responses.flatMap(r => Array.isArray(r.input) ? r.input : [r.input]);
+			const embeddings = await chatbotModel.embed([correctedInput, ...sentences]);
+			const userEmbedding = embeddings.slice([0, 0], [1, -1]);
 
-            function cosineSimilarity(a, b) {
-                return tf.tidy(() => {
-                    const dotProduct = tf.sum(tf.mul(a, b));
-                    const normA = tf.norm(a);
-                    const normB = tf.norm(b);
-                    return dotProduct.div(normA.mul(normB)).dataSync()[0];
-                });
-            }
+			function cosineSimilarity(a, b) {
+				return tf.tidy(() => {
+					const dotProduct = tf.sum(tf.mul(a, b));
+					const normA = tf.norm(a);
+					const normB = tf.norm(b);
+					return dotProduct.div(normA.mul(normB)).dataSync()[0];
+				});
+			}
 
-            let bestMatchIndex = -1;
-            let bestMatchScore = -1;
+			let bestMatchIndex = -1;
+			let bestMatchScore = -1;
 
-            for (let i = 0; i < sentences.length; i++) {
-                let sentenceEmbedding = embeddings.slice([i + 1, 0], [1, -1]);
-                let similarity = cosineSimilarity(userEmbedding, sentenceEmbedding);
+			for (let i = 0; i < sentences.length; i++) {
+				let sentenceEmbedding = embeddings.slice([i + 1, 0], [1, -1]);
+				let similarity = cosineSimilarity(userEmbedding, sentenceEmbedding);
 
-                if (similarity > bestMatchScore) {
-                    bestMatchScore = similarity;
-                    bestMatchIndex = i;
-                }
-            }
+				if (similarity > bestMatchScore) {
+					bestMatchScore = similarity;
+					bestMatchIndex = i;
+				}
+			}
 
-            if (bestMatchIndex !== -1 && bestMatchScore > 0.5) {
-                return responses[bestMatchIndex].output;
-            } else {
-                return "Maaf, aku belum mengerti. Bisa tanya dengan cara lain?";
-            }
+			if (bestMatchIndex !== -1 && bestMatchScore > 0.5) {
+				let possibleResponses = responses[bestMatchIndex].output;
+				return Array.isArray(possibleResponses)
+					? possibleResponses[Math.floor(Math.random() * possibleResponses.length)]  // ✅ Jawaban random
+					: possibleResponses;
+			} else {
+				return "kak arass aku nddak faham kak, datasetku nggak terbatas";
+			}
+			}
+
+			function calculateMathExpression(input) {
+    input = input.replace(/,/g, '.')  // Ganti koma dengan titik
+                 .replace(/÷/g, '/')  // Ganti ÷ jadi /
+                 .replace(/×/g, '*')  // Ganti × jadi *
+                 .replace(/(\d+\/\d+)\s*\/\s*(\d+\/\d+)/g, '($1)/($2)'); // pecahan
+
+    try {
+       
+        let match = input.match(/^\s*f\(\s*x\s*\)\s*=\s*(.+)/i);
+        if (match) {
+            let expression = match[1].trim(); // Ambil ekspresi setelah '='
+            let xValue = 2;  // Nilai default x untuk evaluasi
+            let scope = { x: xValue };
+            let result = math.evaluate(expression, scope);
+            return `Hasil untuk x=${xValue}: ${result}`;
         }
 
-        async function sendMessage() {
-            const userInput = document.getElementById('user-input').value;
-            if (userInput.trim() === '') return;
+        // Evaluasi ekspresi biasa
+        let result = math.evaluate(input);
 
-            const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML += `<div class="message user-message"><strong>Kamu:</strong> ${userInput}</div>`;
-
-            let typingIndicator = document.createElement("div");
-            typingIndicator.classList.add("message", "bot-message");
-            typingIndicator.innerHTML = "<strong>Chatbot:</strong> <em>Sedang mengetik...</em>";
-            chatBox.appendChild(typingIndicator);
-
-            chatBox.scrollTop = chatBox.scrollHeight;
-            document.getElementById('user-input').value = '';
-
-            setTimeout(async () => {
-                chatBox.removeChild(typingIndicator);
-                let botResponse = await getBotResponse(userInput);
-
-                chatBox.innerHTML += `<div class="message bot-message"><strong>Chatbot:</strong> ${botResponse}</div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 1500);
+        // Jika hasil berupa angka desimal, konversi ke pecahan juga
+        if (typeof result === "number" && !Number.isInteger(result)) {
+            let fraction = math.fraction(result);
+            return `Hasil: ${result} (atau dalam pecahan: ${fraction.n}/${fraction.d})`;
         }
+
+        return `Hasil: ${result}`;
+    } catch {
+        return null; // Supaya chatbot tidak error
+    }
+}
+
+
+					function cosineSimilarity(a, b) {
+			return tf.tidy(() => {
+				const dotProduct = tf.sum(tf.mul(a, b));
+				const normA = tf.norm(a);
+				const normB = tf.norm(b);
+				return dotProduct.div(normA.mul(normB)).dataSync()[0];
+			});
+		}
+
+
+       async function sendMessage() {
+    const userInput = document.getElementById('user-input').value;
+    if (userInput.trim() === '') return;
+
+    const chatBox = document.getElementById('chat-box');
+    chatBox.innerHTML += `<div class="message user-message"><strong>Kamu:</strong> ${userInput}</div>`;
+
+    let typingIndicator = document.createElement("div");
+    typingIndicator.classList.add("message", "bot-message");
+    typingIndicator.innerHTML = "<strong>Chatbot:</strong> <em>Sedang mengetik...</em>";
+    chatBox.appendChild(typingIndicator);
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+    document.getElementById('user-input').value = '';
+
+    setTimeout(async () => {
+        chatBox.removeChild(typingIndicator);
+        
+        let botResponse = calculateMathExpression(userInput);
+        if (!botResponse) {
+            botResponse = await getBotResponse(userInput);
+        }
+
+        chatBox.innerHTML += `<div class="message bot-message"><strong>Chatbot:</strong> ${botResponse}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }, 1500);
+}
+
 
         loadModel();
     </script>
